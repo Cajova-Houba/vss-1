@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  * Main class.
  *
@@ -14,6 +16,11 @@ public class Main {
     public static final int NUM_OF_NUMBERS_PARAM = 0;
     public static final int DISTRIBUTION_TYPE_PARAM = 1;
 
+    // types of distribution
+    public static final int ERLANG_DISTRIBUTION = 1;
+    public static final int GEOMETRIC_DISTRIBUTION = 2;
+
+
     /**
      * Set to true if no program arguments are provided and program should
      * generate it's own parameters and run twice.
@@ -28,6 +35,15 @@ public class Main {
             return ;
         }
 
+        if (noArguments) {
+            // generate arguments
+
+            // run
+
+            // do it again
+        } else {
+            // run with arguments
+        }
 
     }
 
@@ -51,5 +67,20 @@ public class Main {
      */
     private static void generateRandomArguments() {
 
+    }
+
+    /**
+     * Generates n numbers with uniform distribution in range from 0 to 1 (exclusive).
+     * @param n Count of generated numbers.
+     * @return Generated numbers.
+     */
+    private static double[] generateRandomNumbers(int n) {
+        double[] nums = new double[n];
+        Random r = new Random();
+        for (int i = 0; i < n; i++) {
+            nums[i] = r.nextDouble();
+        }
+
+        return nums;
     }
 }
