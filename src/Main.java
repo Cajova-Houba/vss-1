@@ -25,7 +25,7 @@ public class Main {
     /**
      * 'b' parameter of triangular distribution.
      */
-    private static int triangDistribParam = 0;
+    private static double triangDistribParam = 0;
 
     public static void main(String[] args) {
         try {
@@ -41,19 +41,19 @@ public class Main {
 
             // 1st set of prepared arguments
             generateArguments1();
-            runner = prepareRunner(uniformGenerator, NUM_OF_NUMBERS_PARAM, DISTRIBUTION_PARAM);
+            runner = prepareRunner(uniformGenerator, countToGenerate, triangDistribParam);
             runner.run();
             printResults(runner);
 
             // 2nd set of prepared arguments
             generateArguments2();
-            runner = prepareRunner(uniformGenerator, NUM_OF_NUMBERS_PARAM, DISTRIBUTION_PARAM);
+            runner = prepareRunner(uniformGenerator, countToGenerate, triangDistribParam);
             runner.run();
             printResults(runner);
 
         } else {
             // run with arguments
-            runner = prepareRunner(uniformGenerator, NUM_OF_NUMBERS_PARAM, DISTRIBUTION_PARAM);
+            runner = prepareRunner(uniformGenerator, countToGenerate, triangDistribParam);
             runner.run();
             printResults(runner);
         }
@@ -80,7 +80,8 @@ public class Main {
      * Used if no program parameters are provided.
      */
     private static void generateArguments1() {
-
+        countToGenerate = 10000;
+        triangDistribParam = 100;
     }
 
     /**
@@ -88,7 +89,8 @@ public class Main {
      * Used if no program parameters are provided.
      */
     private static void generateArguments2() {
-
+        countToGenerate = 1000;
+        triangDistribParam = 250;
     }
 
     /**
@@ -97,7 +99,7 @@ public class Main {
      * @param numberCount How many number should be generated.
      * @param distribParam Triangular distribution parameter.
      */
-    private static RngDistributionStatisticsRunner prepareRunner(Random uniformGenerator, int numberCount, int distribParam) {
+    private static RngDistributionStatisticsRunner prepareRunner(Random uniformGenerator, int numberCount, double distribParam) {
         return new RngDistributionStatisticsRunner(numberCount, new TriangularDistribution(uniformGenerator, distribParam));
     }
 
@@ -107,9 +109,11 @@ public class Main {
      */
     private static void printResults(RngDistributionStatisticsRunner runner) {
         System.out.printf("E_teorie=%f\n", runner.getExpectedMean());
-        System.out.printf("D_teorie=%f\n", runner.getVariance());
+        System.out.printf("D_teorie=%f\n", runner.getExpectedVariance());
         System.out.printf("E_vypocet=%f\n", runner.getMean());
         System.out.printf("D_vypocet=%f\n", runner.getVariance());
+        System.out.println("");
+        // todo: print histogram
     }
 
 

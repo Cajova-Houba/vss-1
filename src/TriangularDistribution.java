@@ -19,12 +19,12 @@ public class TriangularDistribution implements IDistributionGenerator {
     /**
      * Parameter for triangular distribution.
      */
-    private final int b;
+    private final double b;
 
     /**
      * Rest of the parameters if triangular distribution.
      */
-    private final int a,c;
+    private final double a,c;
 
     /**
      * Constructor.
@@ -33,7 +33,7 @@ public class TriangularDistribution implements IDistributionGenerator {
      *                         numbers with triangular distribution.
      * @param b Triangular distribution parameter.
      */
-    public TriangularDistribution(Random uniformGenerator, int b) {
+    public TriangularDistribution(Random uniformGenerator, double b) {
         this.uniformGenerator = uniformGenerator;
         this.b = b;
         this.a = 0;

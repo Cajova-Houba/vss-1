@@ -45,7 +45,6 @@ public class RngDistributionStatisticsRunner {
     }
 
     public double getExpectedVariance() {
-        // todo: implement getVariance method
         return generator.expectedVariance();
     }
 
