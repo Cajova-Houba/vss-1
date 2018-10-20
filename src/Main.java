@@ -98,8 +98,8 @@ public class Main {
      * Used if no program parameters are provided.
      */
     private static void generateArguments1() {
-        countToGenerate = 10000;
-        triangDistribParam = 100;
+        countToGenerate = 100000;
+        triangDistribParam = 10;
     }
 
     /**
@@ -108,7 +108,7 @@ public class Main {
      */
     private static void generateArguments2() {
         countToGenerate = 1000;
-        triangDistribParam = 250;
+        triangDistribParam = 5;
     }
 
     /**
@@ -130,8 +130,19 @@ public class Main {
         System.out.printf("D_teorie=%f\n", runner.getExpectedVariance());
         System.out.printf("E_vypocet=%f\n", runner.getMean());
         System.out.printf("D_vypocet=%f\n", runner.getVariance());
-        System.out.println("");
-        // todo: print histogram
+        System.out.println();
+
+        int countModif = Math.max(1,runner.getNumberCount() / 100);
+        for(Integer d : runner.getHistogram().keySet()) {
+            int numOfChars = runner.getHistogram().get(d) / countModif;
+            if (numOfChars > 0) {
+                System.out.printf("%d: ", d);
+            }
+            for (int i = 0; i < numOfChars; i++) {
+                System.out.print("*");
+            }
+            System.out.println();
+        }
     }
 
 

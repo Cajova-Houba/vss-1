@@ -7,7 +7,7 @@ public interface IDistributionGenerator {
      * Generates random number. Range depends on implementation.
      * @return Random number
      */
-    int nextInt();
+    double nextDouble();
 
     /**
      * Returns expected mean of given distribution.

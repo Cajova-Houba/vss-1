@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This class generates numbers with provided generator and
  * creates histogram, mean value and variance.
@@ -17,16 +20,26 @@ public class RngDistributionStatisticsRunner {
      */
     private final IDistributionGenerator generator;
 
+    private Map<Integer, Integer> histogramMap;
+
     public RngDistributionStatisticsRunner(int numberCount, IDistributionGenerator generator) {
         this.numberCount = numberCount;
         this.generator = generator;
+        histogramMap = new HashMap<>();
     }
 
     /**
      * Generates given count of random numbers and gathers statistics.
      */
     public void run() {
-        // todo: implement run method
+        for (int i = 0; i < numberCount; i++) {
+            Double rand = generator.nextDouble();
+            if (histogramMap.containsKey(rand.intValue())) {
+                histogramMap.put(rand.intValue(),histogramMap.get(rand.intValue())+1);
+            } else {
+                histogramMap.put(rand.intValue(), 1);
+            }
+        }
     }
 
 
@@ -48,14 +61,17 @@ public class RngDistributionStatisticsRunner {
         return generator.expectedVariance();
     }
 
-
     /**
      * Returns histogram with following format:
      * [x][0] = number
      * [x][1] = count
      * @return
      */
-    public int[][] getHistogram() {
-        return new int[0][0];
+    public Map<Integer, Integer> getHistogram() {
+        return histogramMap;
+    }
+
+    public int getNumberCount() {
+        return numberCount;
     }
 }

@@ -35,15 +35,21 @@ public class TriangularDistribution implements IDistributionGenerator {
      */
     public TriangularDistribution(Random uniformGenerator, double b) {
         this.uniformGenerator = uniformGenerator;
-        this.b = b;
         this.a = 0;
+        this.b = b;
         this.c = 2*b;
     }
 
     @Override
-    public int nextInt() {
-        // todo: implement triangular distribution
-        return 0;
+    public double nextDouble() {
+        double r = uniformGenerator.nextDouble();
+        double val = (b-a)/(c-a);
+
+        if (r < val) {
+            return a + Math.sqrt(r*(c-a)*(b-a));
+        } else {
+            return c - Math.sqrt((1-r)*(c-a)*(c-b));
+        }
     }
 
     @Override
@@ -53,6 +59,6 @@ public class TriangularDistribution implements IDistributionGenerator {
 
     @Override
     public double expectedVariance() {
-        return (a*a + b*b + c*c - a*b - a*c -b*c) / 18.0;
+        return (a*a + b*b + c*c - a*c - a*b -c*b) / 18.0;
     }
 }
