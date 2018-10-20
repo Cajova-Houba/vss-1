@@ -1,3 +1,5 @@
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -72,6 +74,22 @@ public class Main {
     private static void parseArgs(String[] args) throws Exception{
         if (args == null || args.length == 0) {
             noArguments = true;
+            return;
+        }
+
+        try {
+            countToGenerate = Integer.parseInt(args[NUM_OF_NUMBERS_PARAM]);
+        } catch (Exception ex) {
+            throw new Exception("Error while parsing the first parameter ("+args[NUM_OF_NUMBERS_PARAM]+"): ["+ex.getClass().getName()+"] "+ex.getMessage());
+        }
+
+        try {
+            // use Locale.US form decimal dot
+            NumberFormat format = NumberFormat.getInstance(Locale.US);
+            Number num = format.parse(args[DISTRIBUTION_PARAM]);
+            triangDistribParam = num.doubleValue();
+        } catch (Exception ex) {
+            throw new Exception("Error while parsing the second parameter ("+args[DISTRIBUTION_PARAM]+"): ["+ex.getClass().getName()+"] "+ex.getMessage());
         }
     }
 
