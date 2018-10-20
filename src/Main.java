@@ -7,25 +7,25 @@ import java.util.Random;
  */
 public class Main {
 
-    /**
-     * At least parameters are expected - number of generated numbers and distribution type.
-     */
-    public static final int MIN_PARAM_COUNT = 2;
-
     // indexes to array of passed arguments
     public static final int NUM_OF_NUMBERS_PARAM = 0;
-    public static final int DISTRIBUTION_TYPE_PARAM = 1;
-
-    // types of distribution
-    public static final int ERLANG_DISTRIBUTION = 1;
-    public static final int GEOMETRIC_DISTRIBUTION = 2;
-
+    public static final int DISTRIBUTION_PARAM = 1;
 
     /**
      * Set to true if no program arguments are provided and program should
      * generate it's own parameters and run twice.
      */
     public static boolean noArguments = false;
+
+    /**
+     * Count of numbers to generate.
+     */
+    private static int countToGenerate = 0;
+
+    /**
+     * 'b' parameter of triangular distribution.
+     */
+    private static int triangDistribParam = 0;
 
     public static void main(String[] args) {
         try {
@@ -35,14 +35,27 @@ public class Main {
             return ;
         }
 
+        RngDistributionStatisticsRunner runner;
+        Random uniformGenerator = new Random();
         if (noArguments) {
-            // generate arguments
 
-            // run
+            // 1st set of prepared arguments
+            generateArguments1();
+            runner = prepareRunner(uniformGenerator, NUM_OF_NUMBERS_PARAM, DISTRIBUTION_PARAM);
+            runner.run();
+            printResults(runner);
 
-            // do it again
+            // 2nd set of prepared arguments
+            generateArguments2();
+            runner = prepareRunner(uniformGenerator, NUM_OF_NUMBERS_PARAM, DISTRIBUTION_PARAM);
+            runner.run();
+            printResults(runner);
+
         } else {
             // run with arguments
+            runner = prepareRunner(uniformGenerator, NUM_OF_NUMBERS_PARAM, DISTRIBUTION_PARAM);
+            runner.run();
+            printResults(runner);
         }
 
     }
@@ -63,24 +76,42 @@ public class Main {
     }
 
     /**
-     * Generates random program arguments - number of generated numbers, type of distribution, distribution parameters...
+     * Generate first set of arguments to demonstrate functionality.
+     * Used if no program parameters are provided.
      */
-    private static void generateRandomArguments() {
+    private static void generateArguments1() {
 
     }
 
     /**
-     * Generates n numbers with uniform distribution in range from 0 to 1 (exclusive).
-     * @param n Count of generated numbers.
-     * @return Generated numbers.
+     * Generate second set of arguments to demonstrate functionality.
+     * Used if no program parameters are provided.
      */
-    private static double[] generateRandomNumbers(int n) {
-        double[] nums = new double[n];
-        Random r = new Random();
-        for (int i = 0; i < n; i++) {
-            nums[i] = r.nextDouble();
-        }
+    private static void generateArguments2() {
 
-        return nums;
     }
+
+    /**
+     * Creates runner with triangular distribution generator.
+     * @param uniformGenerator Uniform generator.
+     * @param numberCount How many number should be generated.
+     * @param distribParam Triangular distribution parameter.
+     */
+    private static RngDistributionStatisticsRunner prepareRunner(Random uniformGenerator, int numberCount, int distribParam) {
+        return new RngDistributionStatisticsRunner(numberCount, new TriangularDistribution(uniformGenerator, distribParam));
+    }
+
+    /**
+     * Prints results from given runner.
+     * @param runner
+     */
+    private static void printResults(RngDistributionStatisticsRunner runner) {
+        System.out.printf("E_teorie=%f\n", runner.getExpectedMean());
+        System.out.printf("D_teorie=%f\n", runner.getVariance());
+        System.out.printf("E_vypocet=%f\n", runner.getMean());
+        System.out.printf("D_vypocet=%f\n", runner.getVariance());
+    }
+
+
+
 }
