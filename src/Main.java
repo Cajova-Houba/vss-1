@@ -98,7 +98,7 @@ public class Main {
      * Used if no program parameters are provided.
      */
     private static void generateArguments1() {
-        countToGenerate = 100000;
+        countToGenerate = 1000000;
         triangDistribParam = 2.333333;
     }
 
@@ -107,7 +107,7 @@ public class Main {
      * Used if no program parameters are provided.
      */
     private static void generateArguments2() {
-        countToGenerate = 10000;
+        countToGenerate = 1000000;
         triangDistribParam = 150;
     }
 
@@ -118,7 +118,7 @@ public class Main {
      * @param distribParam Triangular distribution parameter.
      */
     private static RngDistributionStatisticsRunner prepareRunner(Random uniformGenerator, int numberCount, double distribParam) {
-        return new RngDistributionStatisticsRunner(numberCount, new TriangularDistribution(uniformGenerator, distribParam));
+        return new RngDistributionStatisticsRunner(numberCount, new SimpleTriangularDistribution(uniformGenerator, distribParam));
     }
 
     /**

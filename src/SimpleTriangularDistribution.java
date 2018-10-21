@@ -9,7 +9,7 @@ import java.util.Random;
  * b = param
  * c = 2*b
  */
-public class TriangularDistribution implements IDistributionGenerator {
+public class SimpleTriangularDistribution implements IDistributionGenerator {
 
     /**
      * Generator to be used.
@@ -33,7 +33,7 @@ public class TriangularDistribution implements IDistributionGenerator {
      *                         numbers with triangular distribution.
      * @param b Triangular distribution parameter.
      */
-    public TriangularDistribution(Random uniformGenerator, double b) {
+    public SimpleTriangularDistribution(Random uniformGenerator, double b) {
         this.uniformGenerator = uniformGenerator;
         this.a = 0;
         this.b = b;
@@ -54,12 +54,12 @@ public class TriangularDistribution implements IDistributionGenerator {
 
     @Override
     public double expectedMean() {
-        return (a+b+c)/3.0;
+        return b;
     }
 
     @Override
     public double expectedVariance() {
-        return (a*a + b*b + c*c - a*c - a*b -c*b) / 18.0;
+        return (b*b) / 6.0;
     }
 
     @Override
