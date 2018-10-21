@@ -22,35 +22,96 @@ public class RngDistributionStatisticsRunner {
 
     private Map<Integer, Integer> histogramMap;
 
+    /**
+     * Max number generated during the run().
+     */
+    private Integer maxNumber;
+
+    /**
+     * Max occasions of one number.
+     */
+    private Integer maxNumberCount;
+
+    /**
+     * Mean. Calculated after run().
+     */
+    private double mean;
+
+    /**
+     * Variance. Calculated after variance is calculated.
+     */
+    private double variance;
+
     public RngDistributionStatisticsRunner(int numberCount, IDistributionGenerator generator) {
         this.numberCount = numberCount;
         this.generator = generator;
+    }
+
+    private void initializeBeforeRun() {
         histogramMap = new HashMap<>();
+        maxNumber = null;
+        mean = 0;
+        variance = 0;
     }
 
     /**
      * Generates given count of random numbers and gathers statistics.
      */
     public void run() {
+        initializeBeforeRun();
+
         for (int i = 0; i < numberCount; i++) {
             Double rand = generator.nextDouble();
+
+            if (maxNumber == null || maxNumber < rand.intValue()) {
+                maxNumber = rand.intValue();
+            }
+
+            int count;
             if (histogramMap.containsKey(rand.intValue())) {
-                histogramMap.put(rand.intValue(),histogramMap.get(rand.intValue())+1);
+                count = histogramMap.get(rand.intValue());
+                count++;
+                histogramMap.put(rand.intValue(),count);
             } else {
+                count = 1;
                 histogramMap.put(rand.intValue(), 1);
             }
+
+            if (maxNumberCount == null || maxNumberCount < count) {
+                maxNumberCount = count;
+            }
+        }
+
+        calculateMean();
+        calculateVariance();
+    }
+
+    /**
+     * Calculates mean from histogram.
+     */
+    private void calculateMean() {
+        double numberCount = getNumberCount();
+        mean = 0;
+        for(Integer number : histogramMap.keySet()) {
+            // histogram value / number count is basically probability of number occurring
+            mean += number * histogramMap.get(number) / numberCount;
         }
     }
 
+    private void calculateVariance() {
+        double numberCount = getNumberCount();
+        for(Integer number : histogramMap.keySet()) {
+            // histogram value / number count is basically probability of number occurring
+            variance += Math.pow(number - mean, 2) * (histogramMap.get(number) / numberCount);
+        }
+    }
 
     public double getMean() {
-        // todo: implement getMean method
-        return 0.0;
+        return mean;
     }
 
     public double getVariance() {
-        // todo: implement getVariance method
-        return 0.0;
+        return variance;
     }
 
     public double getExpectedMean() {
@@ -73,5 +134,16 @@ public class RngDistributionStatisticsRunner {
 
     public int getNumberCount() {
         return numberCount;
+    }
+
+    public int getMaxNumber() {
+        if (maxNumber == null) {
+            return 0;
+        }
+        return maxNumber;
+    }
+
+    public int getMaxNumberCount() {
+        return maxNumberCount;
     }
 }

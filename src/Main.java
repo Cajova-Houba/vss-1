@@ -1,6 +1,5 @@
 import java.text.NumberFormat;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Main class.
@@ -107,8 +106,8 @@ public class Main {
      * Used if no program parameters are provided.
      */
     private static void generateArguments2() {
-        countToGenerate = 1000;
-        triangDistribParam = 5;
+        countToGenerate = 10000;
+        triangDistribParam = 150;
     }
 
     /**
@@ -132,17 +131,48 @@ public class Main {
         System.out.printf("D_vypocet=%f\n", runner.getVariance());
         System.out.println();
 
-        int countModif = Math.max(1,runner.getNumberCount() / 100);
-        for(Integer d : runner.getHistogram().keySet()) {
-            int numOfChars = runner.getHistogram().get(d) / countModif;
-            if (numOfChars > 0) {
-                System.out.printf("%d: ", d);
+        // histogram scale - print 10 stars at max
+        double histogramScale = (1.0 / runner.getMaxNumberCount()) * 10.0;
+
+        // offset for number 'axis'
+        int offset = calculateOffset(runner);
+
+        // sort generated numbers by natural order so that histogram is printed correctly
+        List<Integer> generatedNumbers = new ArrayList<>(runner.getHistogram().keySet());
+        generatedNumbers.sort(Comparator.naturalOrder());
+
+        // print histogram
+        for(Integer d : generatedNumbers) {
+            int numOfChars = (int)(runner.getHistogram().get(d) * histogramScale);
+            if (numOfChars <= 0) {
+                continue;
             }
+
+            System.out.printf("%"+offset+"d: ", d, runner.getHistogram().get(d));
             for (int i = 0; i < numOfChars; i++) {
                 System.out.print("*");
             }
             System.out.println();
         }
+
+        System.out.println();
+    }
+
+    /**
+     * Calculates offset for printing histogram.
+     * Histogram is based on the length of the longest generated number.
+     *
+     * @param runner
+     * @return Offset
+     */
+    private static int calculateOffset(RngDistributionStatisticsRunner runner) {
+        int maxNum = runner.getMaxNumber();
+        int offset = 0;
+        while (maxNum > 0) {
+            maxNum = maxNum / 10;
+            offset++;
+        }
+        return offset;
     }
 
 
