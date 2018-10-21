@@ -22,7 +22,7 @@ public class SimpleTriangularDistribution implements IDistributionGenerator {
     private final double b;
 
     /**
-     * Rest of the parameters if triangular distribution.
+     * Rest of the parameters of triangular distribution.
      */
     private final double a,c;
 
@@ -43,8 +43,10 @@ public class SimpleTriangularDistribution implements IDistributionGenerator {
     @Override
     public double nextDouble() {
         double r = uniformGenerator.nextDouble();
-        double val = (b-a)/(c-a);
 
+        // this could be simplified as the parameters a and c are pre-set
+        // but I wanted to use original formula
+        double val = (b-a)/(c-a);
         if (r < val) {
             return a + Math.sqrt(r*(c-a)*(b-a));
         } else {

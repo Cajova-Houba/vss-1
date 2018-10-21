@@ -10,14 +10,14 @@ import java.util.Random;
 public class Main {
 
     // indexes to array of passed arguments
-    public static final int NUM_OF_NUMBERS_PARAM = 0;
-    public static final int DISTRIBUTION_PARAM = 1;
+    private static final int NUM_OF_NUMBERS_PARAM = 0;
+    private static final int DISTRIBUTION_PARAM = 1;
 
     /**
      * Set to true if no program arguments are provided and program should
      * generate it's own parameters and run twice.
      */
-    public static boolean noArguments = false;
+    private static boolean noArguments = false;
 
     /**
      * Count of numbers to generate.
@@ -84,7 +84,7 @@ public class Main {
         }
 
         try {
-            // use Locale.US form decimal dot
+            // use Locale.US for decimal dot
             NumberFormat format = NumberFormat.getInstance(Locale.US);
             Number num = format.parse(args[DISTRIBUTION_PARAM]);
             triangDistribParam = num.doubleValue();
@@ -139,18 +139,23 @@ public class Main {
         int offset = calculateOffset(runner);
 
 
+        // histogram
         double hStep = runner.getHistogramStep();
         double num = hStep;
         int[] histogramArray = runner.getHistogramArray();
 
         // print histogram
         for (int i = 0; i < histogramArray.length; i++) {
+
+            // print one line of histogram
             int numOfChars = (int)(histogramArray[i] * histogramScale);
             System.out.printf("%"+offset+".2f: ", num );
             for (int j = 0; j < numOfChars; j++) {
                 System.out.print("*");
             }
             System.out.println();
+
+            // increment histogram step to update displayed number
             num += hStep;
         }
 
@@ -158,9 +163,8 @@ public class Main {
     }
 
     /**
-     * Calculates offset for printing histogram.
-     * Histogram is based on the length of the longest generated number.
-     *
+     * Calculates offset for printing histogram. Histogram is based on the length of the longest generated number.
+     * So if the max number is 150, offset will be 6: 3 for 3 digits, 1 for decimal dot and 2 for 2 decimal places.
      * @param runner
      * @return Offset
      */
