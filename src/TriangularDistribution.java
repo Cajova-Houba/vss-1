@@ -61,4 +61,9 @@ public class TriangularDistribution implements IDistributionGenerator {
     public double expectedVariance() {
         return (a*a + b*b + c*c - a*c - a*b -c*b) / 18.0;
     }
+
+    @Override
+    public double maxNumber() {
+        return c;
+    }
 }

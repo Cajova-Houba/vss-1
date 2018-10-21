@@ -20,4 +20,10 @@ public interface IDistributionGenerator {
      * @return Expected distribution.
      */
     double expectedVariance();
+
+    /**
+     * Returns max possible number of this distribution.
+     * @return
+     */
+    double maxNumber();
 }

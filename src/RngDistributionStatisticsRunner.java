@@ -11,6 +11,11 @@ import java.util.Map;
 public class RngDistributionStatisticsRunner {
 
     /**
+     * Size of the histogram.
+     */
+    public static final int HISTOGRAM_SIZE = 10;
+
+    /**
      * Count of numbers to generate.
      */
     private final int numberCount;
@@ -20,12 +25,25 @@ public class RngDistributionStatisticsRunner {
      */
     private final IDistributionGenerator generator;
 
-    private Map<Integer, Integer> histogramMap;
+    /**
+     * This map is used to calculate mean and variance.
+     */
+    private Map<Double, Integer> histogramMap;
+
+    /**
+     * Histogram array of length 10 used to print histogram.
+     */
+    private int[] histogramArray;
+
+    /**
+     * One step of a histogram. Possible range of values is divided into 10 steps.
+     */
+    private double histogramStep;
 
     /**
      * Max number generated during the run().
      */
-    private Integer maxNumber;
+    private Double maxNumber;
 
     /**
      * Max occasions of one number.
@@ -52,6 +70,8 @@ public class RngDistributionStatisticsRunner {
         maxNumber = null;
         mean = 0;
         variance = 0;
+        histogramArray = new int[HISTOGRAM_SIZE];
+        histogramStep = generator.maxNumber() / ((double)HISTOGRAM_SIZE);
     }
 
     /**
@@ -63,23 +83,45 @@ public class RngDistributionStatisticsRunner {
         for (int i = 0; i < numberCount; i++) {
             Double rand = generator.nextDouble();
 
-            if (maxNumber == null || maxNumber < rand.intValue()) {
-                maxNumber = rand.intValue();
+            if (maxNumber == null || maxNumber < rand) {
+                maxNumber = rand;
             }
 
+            // add value to histogram map - so it can be later used to calculate mean and variance
             int count;
-            if (histogramMap.containsKey(rand.intValue())) {
-                count = histogramMap.get(rand.intValue());
+            if (histogramMap.containsKey(rand)) {
+                count = histogramMap.get(rand);
                 count++;
-                histogramMap.put(rand.intValue(),count);
+                histogramMap.put(rand,count);
             } else {
                 count = 1;
-                histogramMap.put(rand.intValue(), 1);
+                histogramMap.put(rand, count);
             }
 
-            if (maxNumberCount == null || maxNumberCount < count) {
-                maxNumberCount = count;
+            // add generated value to histogram
+            boolean addedToHistogram = false;
+            int counter = 1;
+            while (!addedToHistogram) {
+                if (counter*histogramStep >= rand) {
+                    histogramArray[counter-1]++;
+                    addedToHistogram = true;
+                } else {
+                    counter++;
+                }
+
+                // value is too big, put it to the end of histogram
+                if ((counter-1) == histogramArray.length ) {
+                    counter--;
+                    histogramArray[counter-1]++;
+                    addedToHistogram = true;
+                }
+
+                // maxNumberCount
+                if (maxNumberCount == null || maxNumberCount < histogramArray[counter-1]) {
+                    maxNumberCount = histogramArray[counter-1];
+                }
             }
+
         }
 
         calculateMean();
@@ -92,7 +134,7 @@ public class RngDistributionStatisticsRunner {
     private void calculateMean() {
         double numberCount = getNumberCount();
         mean = 0;
-        for(Integer number : histogramMap.keySet()) {
+        for(Double number : histogramMap.keySet()) {
             // histogram value / number count is basically probability of number occurring
             mean += number * histogramMap.get(number) / numberCount;
         }
@@ -100,7 +142,7 @@ public class RngDistributionStatisticsRunner {
 
     private void calculateVariance() {
         double numberCount = getNumberCount();
-        for(Integer number : histogramMap.keySet()) {
+        for(Double number : histogramMap.keySet()) {
             // histogram value / number count is basically probability of number occurring
             variance += Math.pow(number - mean, 2) * (histogramMap.get(number) / numberCount);
         }
@@ -123,20 +165,23 @@ public class RngDistributionStatisticsRunner {
     }
 
     /**
-     * Returns histogram with following format:
-     * [x][0] = number
-     * [x][1] = count
+     * It is guaranteed that this array will be of size HISTOGRAM_SIZE after runnin
+     * run() method.
      * @return
      */
-    public Map<Integer, Integer> getHistogram() {
-        return histogramMap;
+    public int[] getHistogramArray() {
+        return histogramArray;
+    }
+
+    public double getHistogramStep() {
+        return histogramStep;
     }
 
     public int getNumberCount() {
         return numberCount;
     }
 
-    public int getMaxNumber() {
+    public double getMaxNumber() {
         if (maxNumber == null) {
             return 0;
         }

@@ -1,5 +1,6 @@
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.Locale;
+import java.util.Random;
 
 /**
  * Main class.
@@ -98,7 +99,7 @@ public class Main {
      */
     private static void generateArguments1() {
         countToGenerate = 100000;
-        triangDistribParam = 10;
+        triangDistribParam = 2.333333;
     }
 
     /**
@@ -137,22 +138,20 @@ public class Main {
         // offset for number 'axis'
         int offset = calculateOffset(runner);
 
-        // sort generated numbers by natural order so that histogram is printed correctly
-        List<Integer> generatedNumbers = new ArrayList<>(runner.getHistogram().keySet());
-        generatedNumbers.sort(Comparator.naturalOrder());
+
+        double hStep = runner.getHistogramStep();
+        double num = hStep;
+        int[] histogramArray = runner.getHistogramArray();
 
         // print histogram
-        for(Integer d : generatedNumbers) {
-            int numOfChars = (int)(runner.getHistogram().get(d) * histogramScale);
-            if (numOfChars <= 0) {
-                continue;
-            }
-
-            System.out.printf("%"+offset+"d: ", d, runner.getHistogram().get(d));
-            for (int i = 0; i < numOfChars; i++) {
+        for (int i = 0; i < histogramArray.length; i++) {
+            int numOfChars = (int)(histogramArray[i] * histogramScale);
+            System.out.printf("%"+offset+".2f: ", num );
+            for (int j = 0; j < numOfChars; j++) {
                 System.out.print("*");
             }
             System.out.println();
+            num += hStep;
         }
 
         System.out.println();
@@ -166,13 +165,15 @@ public class Main {
      * @return Offset
      */
     private static int calculateOffset(RngDistributionStatisticsRunner runner) {
-        int maxNum = runner.getMaxNumber();
+        int maxNum = (int)Math.floor(runner.getMaxNumber());
         int offset = 0;
         while (maxNum > 0) {
             maxNum = maxNum / 10;
             offset++;
         }
-        return offset;
+
+        // offset + dot + 2 decimal places
+        return offset + 3;
     }
 
 
